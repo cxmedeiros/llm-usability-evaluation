@@ -49,29 +49,58 @@ Comparação dos problemas identificados pelos agentes com os problemas previame
 
 ## Estrutura do Repositório
 
-Estrutura inicial proposta, sujeita a alterações durante o desenvolvimento.
+Estrutura implementada até o segundo incremento:
 
 ```text
 llm-usability-evaluation/
-├── agents/
-│   ├── baseline/
-│   └── gendermag/
-├── interfaces/
-│   ├── interface-01/
-│   └── interface-02/
-├── experiments/
-├── results/
+├── pyproject.toml
+├── requirements-dev.lock
+├── src/usability_eval/
+│   ├── __init__.py
+│   ├── schemas.py
+│   ├── browser.py
+│   ├── recording.py
+│   └── runner.py
+├── examples/run_scripted.py
 ├── docs/
+│   ├── contracts.md
+│   └── execution.md
 ├── tests/
+│   ├── conftest.py
+│   ├── test_schemas.py
+│   └── test_runner.py
 └── README.md
 ```
 
-## Tecnologias
+## Estado atual e ambiente
 
-As tecnologias serão definidas ao longo do desenvolvimento. Inicialmente, estão previstas:
+Implementados: contratos Pydantic; executor compartilhado com política Python
+injetável; navegação e interação reais com Chromium via Playwright; screenshots,
+trace e persistência em JSON/JSONL; testes de contratos e integração com navegador.
+O walkthrough possui apenas um contrato extensível, sem protocolo implementado.
 
-- **Python:** desenvolvimento dos agentes e execução dos experimentos.
-- **LLMs:** análise automatizada das interfaces.
-- **Automação de navegadores:** navegação e execução das tarefas.
-- **HTML, CSS e JavaScript:** desenvolvimento das interfaces experimentais.
-- **Ferramentas de análise de dados:** organização e comparação dos resultados.
+Ainda planejados: integração com LLMs, estratégias de avaliação baseline/GenderMag,
+interfaces experimentais, verificação do sucesso das tarefas e análise de resultados.
+
+Requer Python 3.11 ou superior. Para instalar as versões usadas na validação:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.lock
+python -m pip install --no-deps -e .
+python -m playwright install chromium
+python -m pytest
+```
+
+Para desenvolvimento com versões dentro das faixas do `pyproject.toml`, use
+`python -m pip install -e '.[dev]'` em vez das duas etapas de instalação acima.
+O lock registra dependências diretas e transitivas do ambiente de validação;
+não fixa o interpretador nem garante disponibilidade de wheels em toda plataforma.
+
+Os testes de integração abrem Chromium e um servidor HTTP temporário em loopback;
+não utilizam serviços externos ou LLMs. Para executar apenas os testes sem
+navegador: `python -m pytest -m 'not browser'`.
+
+Veja [os contratos e suas regras](docs/contracts.md) e
+[como executar um roteiro com navegador](docs/execution.md).

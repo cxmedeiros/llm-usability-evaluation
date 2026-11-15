@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-usability-evaluation"
+version = "0.1.0"
+description = "Contratos para experimentos de avaliação de usabilidade com LLMs"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.12,<3", "playwright>=1.56,<2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.4,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["browser: integração com Chromium real (requer playwright install chromium)"]
